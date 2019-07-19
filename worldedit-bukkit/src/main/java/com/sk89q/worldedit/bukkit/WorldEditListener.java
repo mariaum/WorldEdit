@@ -43,6 +43,8 @@ import org.bukkit.inventory.EquipmentSlot;
  */
 public class WorldEditListener implements Listener {
 
+    private static boolean SUPPORT_OFF_HAND = true;
+
     private WorldEditPlugin plugin;
 
     /**
@@ -115,13 +117,15 @@ public class WorldEditListener implements Listener {
             return;
         }
 
-        try {
-            if (event.getHand() == EquipmentSlot.OFF_HAND) {
-                return; // TODO api needs to be able to get either hand depending on event
-                // for now just ignore all off hand interacts
+        if (SUPPORT_OFF_HAND) {
+            try {
+                if (event.getHand() == EquipmentSlot.OFF_HAND) {
+                    return; // TODO api needs to be able to get either hand depending on event
+                    // for now just ignore all off hand interacts
+                }
+            } catch (NoSuchMethodError | NoSuchFieldError ignored) {
+                SUPPORT_OFF_HAND = false;
             }
-        } catch (NoSuchMethodError ignored) {
-        } catch (NoSuchFieldError ignored) {
         }
 
         final LocalPlayer player = plugin.wrapPlayer(event.getPlayer());
